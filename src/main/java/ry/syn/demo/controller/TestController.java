@@ -1,8 +1,10 @@
 package ry.syn.demo.controller;
 
 import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ry.syn.demo.services.TestService;
 
 import javax.print.DocFlavor;
 import java.util.ArrayList;
@@ -13,8 +15,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/test")
 public class TestController {
-    String appleName = "Apple";
 
+    @Autowired
+    TestService service;
     @GetMapping()
     public Boolean getRootTest() {
         return false;
@@ -24,16 +27,15 @@ public class TestController {
     public List<String> getApple(@PathVariable("count") int count) {
         ArrayList<String> ret = new ArrayList<>();
         for (int i = 0; i < count; ++i)
-            ret.add(appleName + "#" + i);
+            ret.add(service.appleName + "#" + i);
         return ret;
     }
 
-    @PostMapping("/setApple")
+    @PostMapping("/setAppleName")
     public boolean setAppleName(@RequestBody() Map<String, Object> body) {
         try {
             if (body.containsKey("name")) {
-                appleName = ((String) body.get("name"));
-                return true;
+                 return service.setAppleName((String) body.get("name"));
             }
         } catch (Exception e) {
             return false;
